@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.weather.provider.grpc";
+option java_outer_classname = "WeatherProto";
+
+package weather;
+
+service WeatherService {
+  rpc getWeather (WeatherRequest) returns (WeatherResponse) {}
+}
+
+message WeatherRequest {
+  string city = 1;
+}
+
+message WeatherResponse {
+  string city = 1;
+  double temperature = 2;
+  string description = 3;
+  string status = 4;
+}
