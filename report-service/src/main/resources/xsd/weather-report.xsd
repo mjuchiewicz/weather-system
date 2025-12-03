@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://weather.com/report"
+           targetNamespace="http://weather.com/report"
+           elementFormDefault="qualified">
+
+    <xs:element name="getWeatherReportRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="city" type="xs:string"/>
+                <xs:element name="days" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getWeatherReportResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="city" type="xs:string"/>
+                <xs:element name="reportDate" type="xs:string"/>
+                <xs:element name="averageTemperature" type="xs:double"/>
+                <xs:element name="minTemperature" type="xs:double"/>
+                <xs:element name="maxTemperature" type="xs:double"/>
+                <xs:element name="summary" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
