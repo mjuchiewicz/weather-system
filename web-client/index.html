@@ -26,7 +26,7 @@
             backdrop-filter: blur(10px);
             border-radius: 24px;
             padding: 40px;
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: fadeIn 0.5s ease;
@@ -91,7 +91,7 @@
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 24px;
+            margin-bottom: 12px;
         }
 
         button:hover {
@@ -103,6 +103,18 @@
             transform: translateY(0);
         }
 
+        .secondary-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .tertiary-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            font-size: 14px;
+            padding: 12px;
+        }
+
         .weather-card {
             display: none;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -111,6 +123,7 @@
             color: white;
             text-align: center;
             animation: slideIn 0.5s ease;
+            margin-bottom: 16px;
         }
 
         @keyframes slideIn {
@@ -149,6 +162,85 @@
             font-size: 14px;
             font-weight: 600;
             background: rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .action-buttons button {
+            margin-bottom: 0;
+            flex: 1;
+            font-size: 13px;
+            padding: 12px;
+        }
+
+        .history-card, .report-card {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            color: #2d3748;
+            animation: slideIn 0.5s ease;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #667eea;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        .history-table th {
+            background: #f7fafc;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .history-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .report-content {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+
+        .report-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .report-row:last-child {
+            border-bottom: none;
+        }
+
+        .report-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .report-value {
+            color: #2d3748;
         }
 
         .error {
@@ -193,7 +285,7 @@
 <body>
 <div class="container">
     <h1>☀️ Weather System</h1>
-    <p class="subtitle">Sprawdź pogodę w swoim mieście</p>
+    <p class="subtitle">Sprawdź pogodę, historię i wygeneruj raport</p>
 
     <div class="search-box">
         <input type="text" id="cityInput" placeholder="Wpisz nazwę miasta..." />
@@ -212,11 +304,41 @@
         <div class="temperature" id="temperature"></div>
         <div class="description" id="description"></div>
         <div class="status" id="status"></div>
+
+        <div class="action-buttons">
+            <button class="secondary-btn" onclick="getHistory()">📊 Historia</button>
+            <button class="tertiary-btn" onclick="generateReport()">📄 Raport</button>
+        </div>
+    </div>
+
+    <div class="history-card" id="historyCard">
+        <div class="card-title">📊 Historia pogody</div>
+        <table class="history-table">
+            <thead>
+            <tr>
+                <th>Data</th>
+                <th>Temp.</th>
+                <th>Opis</th>
+                <th>Wilgotność</th>
+            </tr>
+            </thead>
+            <tbody id="historyBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="report-card" id="reportCard">
+        <div class="card-title">📄 Raport pogodowy</div>
+        <div class="report-content" id="reportContent">
+        </div>
     </div>
 </div>
 
 <script>
     const API_URL = 'http://localhost:8085/api/weather';
+    const XMLRPC_URL = 'http://localhost:8088/xmlrpc/historical';
+    const REPORT_API_URL = 'http://localhost:8085/api/report';
+    let currentCity = '';
 
     function getWeather() {
         const city = document.getElementById('cityInput').value.trim();
@@ -226,6 +348,7 @@
             return;
         }
 
+        currentCity = city;
         hideAll();
         document.getElementById('loading').style.display = 'block';
 
@@ -253,6 +376,109 @@
         document.getElementById('weatherCard').style.display = 'block';
     }
 
+    function getHistory() {
+        if (!currentCity) return;
+
+        document.getElementById('historyCard').style.display = 'none';
+        document.getElementById('loading').style.display = 'block';
+
+        // Generujemy 5 dni historii
+        const historyPromises = [];
+        for (let i = 1; i <= 5; i++) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+
+            historyPromises.push(
+                fetch(`${XMLRPC_URL}?city=${currentCity}&date=${dateStr}`)
+                    .then(r => r.json())
+            );
+        }
+
+        Promise.all(historyPromises)
+            .then(results => {
+                displayHistory(results);
+            })
+            .catch(error => {
+                showError('Nie udało się pobrać historii');
+            })
+            .finally(() => {
+                document.getElementById('loading').style.display = 'none';
+            });
+    }
+
+    function displayHistory(data) {
+        const tbody = document.getElementById('historyBody');
+        tbody.innerHTML = '';
+
+        data.forEach(day => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                    <td>${day.date}</td>
+                    <td>${day.temperature.toFixed(1)}°C</td>
+                    <td>${day.description}</td>
+                    <td>${day.humidity}%</td>
+                `;
+        });
+
+        document.getElementById('historyCard').style.display = 'block';
+    }
+
+    function generateReport() {
+        if (!currentCity) return;
+
+        document.getElementById('reportCard').style.display = 'none';
+        document.getElementById('loading').style.display = 'block';
+
+        fetch(`${REPORT_API_URL}/${currentCity}?days=7`)
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to generate report');
+                return response.json();
+            })
+            .then(report => {
+                displayReport(report);
+            })
+            .catch(error => {
+                showError('Nie udało się wygenerować raportu');
+                console.error(error);
+            })
+            .finally(() => {
+                document.getElementById('loading').style.display = 'none';
+            });
+    }
+
+    function displayReport(report) {
+        const content = document.getElementById('reportContent');
+        content.innerHTML = `
+                <div class="report-row">
+                    <span class="report-label">Miasto:</span>
+                    <span class="report-value">${report.city}</span>
+                </div>
+                <div class="report-row">
+                    <span class="report-label">Data raportu:</span>
+                    <span class="report-value">${report.reportDate}</span>
+                </div>
+                <div class="report-row">
+                    <span class="report-label">Średnia temperatura:</span>
+                    <span class="report-value">${report.avgTemp}°C</span>
+                </div>
+                <div class="report-row">
+                    <span class="report-label">Min temperatura:</span>
+                    <span class="report-value">${report.minTemp}°C</span>
+                </div>
+                <div class="report-row">
+                    <span class="report-label">Max temperatura:</span>
+                    <span class="report-value">${report.maxTemp}°C</span>
+                </div>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid #e2e8f0;">
+                    <div class="report-label" style="margin-bottom: 8px;">Podsumowanie:</div>
+                    <div style="color: #4a5568; line-height: 1.6;">${report.summary}</div>
+                </div>
+            `;
+
+        document.getElementById('reportCard').style.display = 'block';
+    }
+
     function showError(message) {
         const errorDiv = document.getElementById('error');
         errorDiv.textContent = message;
@@ -265,9 +491,10 @@
     function hideAll() {
         document.getElementById('error').style.display = 'none';
         document.getElementById('weatherCard').style.display = 'none';
+        document.getElementById('historyCard').style.display = 'none';
+        document.getElementById('reportCard').style.display = 'none';
     }
 
-    // Enter key support
     document.getElementById('cityInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             getWeather();
