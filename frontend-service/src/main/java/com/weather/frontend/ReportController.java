@@ -1,5 +1,6 @@
 package com.weather.frontend;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -15,7 +16,8 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class ReportController {
 
-    private static final String SOAP_URL = "http://localhost:8087/ws";
+    @Value("${soap.report.url}")
+    private String soapUrl;
 
     @GetMapping("/{city}")
     public ResponseEntity<Map<String, Object>> generateReport(@PathVariable String city,
@@ -43,8 +45,7 @@ public class ReportController {
             headers.setContentType(MediaType.TEXT_XML);
 
             HttpEntity<String> request = new HttpEntity<>(soapRequest, headers);
-            String soapResponse = restTemplate.postForObject(SOAP_URL, request, String.class);
-            System.out.println("SOAP Response: " + soapResponse);
+            String soapResponse = restTemplate.postForObject(soapUrl, request, String.class);            System.out.println("SOAP Response: " + soapResponse);
 
             // Parse SOAP response (simplified)
             Map<String, Object> result = parseSoapResponse(soapResponse);

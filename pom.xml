@@ -38,7 +38,12 @@
     </dependencyManagement>
 
     <modules>
-        <!-- Tutaj będą moduły -->
+        <module>eureka-server</module>
+        <module>frontend-service</module>
+        <module>weather-provider</module>
+        <module>report-service</module>
+        <module>xmlrpc-service</module>
+        <module>alert-service</module>
     </modules>
 
 </project>

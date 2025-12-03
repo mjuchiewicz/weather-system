@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  # 1. Eureka Server - service discovery (musi wystartować pierwszy!)
+  eureka-server:
+    image: eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - weather-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  # 2. RabbitMQ - message broker
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI
+    networks:
+      - weather-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 3. Weather Provider - gRPC service (czeka na RabbitMQ i Eureka)
+  weather-provider:
+    image: weather-provider:latest
+    container_name: weather-provider
+    ports:
+      - "8084:8084"
+      - "9090:9090"  # gRPC port
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    networks:
+      - weather-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  # 4. Alert Service - konsument RabbitMQ
+  alert-service:
+    image: alert-service:latest
+    container_name: alert-service
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    networks:
+      - weather-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  # 5. Report Service - SOAP service
+  report-service:
+    image: report-service:latest
+    container_name: report-service
+    ports:
+      - "8087:8087"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    networks:
+      - weather-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+  # 6. XML-RPC Service
+  xmlrpc-service:
+    image: xmlrpc-service:latest
+    container_name: xmlrpc-service
+    ports:
+      - "8088:8088"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    networks:
+      - weather-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+  # 7. Frontend Service - główny endpoint REST
+  frontend-service:
+    image: frontend-service:latest
+    container_name: frontend-service
+    ports:
+      - "8085:8085"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - GRPC_WEATHER_HOST=weather-provider
+      - GRPC_WEATHER_PORT=9090
+      - SOAP_REPORT_URL=http://report-service:8087/ws
+    networks:
+      - weather-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      weather-provider:
+        condition: service_started
+
+# Sieć do komunikacji między kontenerami
+networks:
+  weather-network:
+    driver: bridge
