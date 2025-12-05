@@ -96,6 +96,9 @@ services:
 
   # 7. Frontend Service - główny endpoint REST
   frontend-service:
+    build:
+      context: ./frontend-service
+      dockerfile: Dockerfile
     image: frontend-service:latest
     container_name: frontend-service
     ports:

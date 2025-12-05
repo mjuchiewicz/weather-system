@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather System</title>
+    <title>Weather System - Complete</title>
     <style>
         * {
             margin: 0;
@@ -12,494 +12,681 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            padding: 40px 20px;
+            color: #2d3748;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #2d3748;
+            font-size: 36px;
+            font-weight: 600;
             margin-bottom: 8px;
-            text-align: center;
+            color: #1a202c;
         }
 
         .subtitle {
-            text-align: center;
             color: #718096;
             margin-bottom: 32px;
             font-size: 14px;
         }
 
-        .search-box {
-            position: relative;
-            margin-bottom: 32px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 16px 20px;
-            font-size: 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            outline: none;
-            transition: all 0.3s ease;
-            background: #f7fafc;
-        }
-
-        input[type="text"]:focus {
-            border-color: #667eea;
+        .section {
             background: white;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 13px;
+            color: #718096;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #4a5568;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: #4299e1;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
         }
 
         button {
-            width: 100%;
-            padding: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
             border: none;
-            border-radius: 12px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 12px;
+            transition: all 0.2s;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .secondary-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            font-size: 14px;
-            padding: 12px;
-        }
-
-        .tertiary-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            font-size: 14px;
-            padding: 12px;
-        }
-
-        .weather-card {
-            display: none;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            padding: 32px;
+        .btn-primary {
+            background: #4299e1;
             color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3182ce;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-edit {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+        .btn-edit:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            background: #f7fafc;
+            font-weight: 600;
+            font-size: 13px;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-ok {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-alert {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .weather-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 32px;
+            border-radius: 12px;
             text-align: center;
-            animation: slideIn 0.5s ease;
-            margin-bottom: 16px;
+            margin-top: 16px;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .city-name {
+        .weather-display .city {
             font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
         }
 
-        .temperature {
-            font-size: 64px;
+        .weather-display .temp {
+            font-size: 48px;
             font-weight: 300;
             margin-bottom: 8px;
         }
 
-        .description {
-            font-size: 18px;
+        .weather-display .desc {
+            font-size: 16px;
             opacity: 0.9;
-            margin-bottom: 16px;
         }
 
-        .status {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.2);
-            margin-bottom: 20px;
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .action-buttons button {
-            margin-bottom: 0;
-            flex: 1;
-            font-size: 13px;
-            padding: 12px;
-        }
-
-        .history-card, .report-card {
-            display: none;
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            color: #2d3748;
-            animation: slideIn 0.5s ease;
-            margin-bottom: 16px;
-        }
-
-        .card-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: #667eea;
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
-
-        .history-table th {
+        .report-item {
             background: #f7fafc;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            color: #4a5568;
-            font-size: 14px;
-        }
-
-        .history-table td {
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 14px;
-        }
-
-        .report-content {
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 12px;
-        }
-
-        .report-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .report-row:last-child {
-            border-bottom: none;
-        }
-
-        .report-label {
-            font-weight: 600;
-            color: #4a5568;
-        }
-
-        .report-value {
-            color: #2d3748;
-        }
-
-        .error {
-            background: #fc8181;
-            color: white;
             padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            display: none;
-            animation: shake 0.5s ease;
+            border-radius: 8px;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+        .report-item .label {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+
+        .report-item .value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #a0aec0;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.error {
+            background: #f56565;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .loading {
             display: none;
             text-align: center;
-            color: #667eea;
-            margin-bottom: 24px;
+            padding: 20px;
+            color: #4299e1;
         }
 
-        .loader {
-            border: 3px solid #e2e8f0;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
+<div class="toast" id="toast"></div>
+
 <div class="container">
-    <h1>☀️ Weather System</h1>
-    <p class="subtitle">Sprawdź pogodę, historię i wygeneruj raport</p>
+    <h1>🌤️ Weather System</h1>
+    <p class="subtitle">Complete microservices demonstration: REST CRUD, gRPC, SOAP, XML-RPC, RabbitMQ</p>
 
-    <div class="search-box">
-        <input type="text" id="cityInput" placeholder="Wpisz nazwę miasta..." />
-    </div>
+    <!-- SECTION 1: REST CRUD (Database) -->
+    <div class="section">
+        <div class="section-title">📋 Weather History (REST CRUD + Database)</div>
+        <div class="section-subtitle">Manage weather records with full CRUD operations</div>
 
-    <button onclick="getWeather()">Sprawdź pogodę</button>
+        <!-- Add Form -->
+        <form id="addForm" onsubmit="addRecord(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" id="city" required placeholder="Warsaw">
+                </div>
+                <div class="form-group">
+                    <label>Temperature (°C)</label>
+                    <input type="number" step="0.1" id="temperature" required placeholder="22.5">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="description" required placeholder="Sunny">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="status" required>
+                        <option value="OK">OK</option>
+                        <option value="ALERT">ALERT</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">Add Record</button>
+        </form>
 
-    <div class="loading" id="loading">
-        <div class="loader"></div>
-    </div>
-
-    <div class="error" id="error"></div>
-
-    <div class="weather-card" id="weatherCard">
-        <div class="city-name" id="cityName"></div>
-        <div class="temperature" id="temperature"></div>
-        <div class="description" id="description"></div>
-        <div class="status" id="status"></div>
-
-        <div class="action-buttons">
-            <button class="secondary-btn" onclick="getHistory()">📊 Historia</button>
-            <button class="tertiary-btn" onclick="generateReport()">📄 Raport</button>
-        </div>
-    </div>
-
-    <div class="history-card" id="historyCard">
-        <div class="card-title">📊 Historia pogody</div>
-        <table class="history-table">
+        <!-- Records Table -->
+        <table id="recordsTable">
             <thead>
             <tr>
-                <th>Data</th>
-                <th>Temp.</th>
-                <th>Opis</th>
-                <th>Wilgotność</th>
+                <th>ID</th>
+                <th>City</th>
+                <th>Temperature</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+                <th>Actions</th>
             </tr>
             </thead>
-            <tbody id="historyBody">
+            <tbody id="recordsBody">
+            <tr><td colspan="7" class="empty-state">Loading...</td></tr>
             </tbody>
         </table>
     </div>
 
-    <div class="report-card" id="reportCard">
-        <div class="card-title">📄 Raport pogodowy</div>
-        <div class="report-content" id="reportContent">
+    <!-- SECTION 2: gRPC Live Weather -->
+    <div class="section">
+        <div class="section-title">⚡ Live Weather (gRPC)</div>
+        <div class="section-subtitle">Get real-time weather data from gRPC Weather Provider</div>
+
+        <div class="form-group">
+            <label>City Name</label>
+            <input type="text" id="grpcCity" placeholder="Warsaw">
         </div>
+        <button class="btn-success" onclick="getLiveWeather()">Get Live Weather</button>
+
+        <div id="grpcLoading" class="loading hidden">Loading...</div>
+        <div id="grpcResult" class="hidden"></div>
+    </div>
+
+    <!-- SECTION 3: SOAP Weather Report -->
+    <div class="section">
+        <div class="section-title">📊 Weather Report (SOAP)</div>
+        <div class="section-subtitle">Generate 7-day weather report via SOAP service</div>
+
+        <div class="form-group">
+            <label>City Name</label>
+            <input type="text" id="soapCity" placeholder="Warsaw">
+        </div>
+        <button class="btn-success" onclick="generateReport()">Generate Report</button>
+
+        <div id="soapLoading" class="loading hidden">Loading...</div>
+        <div id="soapResult" class="hidden"></div>
+    </div>
+
+    <!-- SECTION 4: XML-RPC Historical Data -->
+    <div class="section">
+        <div class="section-title">📅 Historical Weather (XML-RPC)</div>
+        <div class="section-subtitle">Get historical weather data via XML-RPC service</div>
+
+        <div class="form-group">
+            <label>City Name</label>
+            <input type="text" id="xmlrpcCity" placeholder="Warsaw">
+        </div>
+        <button class="btn-success" onclick="getHistoricalWeather()">Get Historical Data</button>
+
+        <div id="xmlrpcLoading" class="loading hidden">Loading...</div>
+        <div id="xmlrpcResult" class="hidden"></div>
     </div>
 </div>
 
 <script>
-    const API_URL = 'http://localhost:8085/api/weather';
-    const XMLRPC_URL = 'http://localhost:8088/xmlrpc/historical';
-    const REPORT_API_URL = 'http://localhost:8085/api/report';
-    let currentCity = '';
+    // API Endpoints
+    const REST_API = 'http://localhost:8085/api/weather-history';
+    const GRPC_API = 'http://localhost:8085/api/weather';
+    const SOAP_API = 'http://localhost:8085/api/report';
+    const XMLRPC_API = 'http://localhost:8085/api/historical';
 
-    function getWeather() {
-        const city = document.getElementById('cityInput').value.trim();
+    // ========== PAGE LOAD ==========
+    window.onload = () => {
+        loadRecords();
+    };
 
-        if (!city) {
-            showError('Proszę wpisać nazwę miasta');
+    // ========== REST CRUD OPERATIONS ==========
+
+    async function loadRecords() {
+        try {
+            const response = await fetch(`${REST_API}?page=0&size=20&sortBy=timestamp`);
+            const data = await response.json();
+            displayRecords(data.content);
+        } catch (error) {
+            showToast('Failed to load records', 'error');
+        }
+    }
+
+    function displayRecords(records) {
+        const tbody = document.getElementById('recordsBody');
+
+        if (records.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No records found. Add some records above!</td></tr>';
             return;
         }
 
-        currentCity = city;
-        hideAll();
-        document.getElementById('loading').style.display = 'block';
+        tbody.innerHTML = records.map(record => `
+                <tr id="row-${record.id}">
+                    <td>${record.id}</td>
+                    <td>${record.city}</td>
+                    <td>${record.temperature}°C</td>
+                    <td>${record.description}</td>
+                    <td><span class="status-badge status-${record.status.toLowerCase()}">${record.status}</span></td>
+                    <td>${new Date(record.timestamp).toLocaleString()}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editRecord(${record.id})">Edit</button>
+                        <button class="btn-danger" onclick="deleteRecord(${record.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+    }
 
-        fetch(`${API_URL}/${city}`)
-            .then(response => {
-                if (!response.ok) throw new Error('Miasto nie znalezione');
-                return response.json();
-            })
-            .then(data => {
-                displayWeather(data);
-            })
-            .catch(error => {
-                showError('Nie udało się pobrać danych pogodowych');
-            })
-            .finally(() => {
-                document.getElementById('loading').style.display = 'none';
+    async function addRecord(event) {
+        event.preventDefault();
+
+        const data = {
+            city: document.getElementById('city').value,
+            temperature: parseFloat(document.getElementById('temperature').value),
+            description: document.getElementById('description').value,
+            status: document.getElementById('status').value
+        };
+
+        try {
+            const response = await fetch(REST_API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
             });
+
+            if (response.ok) {
+                showToast('Record added successfully!');
+                document.getElementById('addForm').reset();
+                loadRecords();
+            } else {
+                showToast('Failed to add record', 'error');
+            }
+        } catch (error) {
+            showToast('Error: ' + error.message, 'error');
+        }
     }
 
-    function displayWeather(data) {
-        document.getElementById('cityName').textContent = data.city;
-        document.getElementById('temperature').textContent = `${data.temperature}°C`;
-        document.getElementById('description').textContent = data.description;
-        document.getElementById('status').textContent = data.status;
-        document.getElementById('weatherCard').style.display = 'block';
+    async function editRecord(id) {
+        const row = document.getElementById(`row-${id}`);
+        const cells = row.cells;
+
+        const newCity = prompt('City:', cells[1].textContent);
+        if (!newCity) return;
+
+        const newTemp = prompt('Temperature:', cells[2].textContent.replace('°C', ''));
+        if (!newTemp) return;
+
+        const newDesc = prompt('Description:', cells[3].textContent);
+        if (!newDesc) return;
+
+        const newStatus = prompt('Status (OK/ALERT):', cells[4].textContent.trim());
+        if (!newStatus) return;
+
+        const data = {
+            city: newCity,
+            temperature: parseFloat(newTemp),
+            description: newDesc,
+            status: newStatus.toUpperCase()
+        };
+
+        try {
+            const response = await fetch(`${REST_API}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                showToast('Record updated successfully!');
+                loadRecords();
+            } else {
+                showToast('Failed to update record', 'error');
+            }
+        } catch (error) {
+            showToast('Error: ' + error.message, 'error');
+        }
     }
 
-    function getHistory() {
-        if (!currentCity) return;
+    async function deleteRecord(id) {
+        if (!confirm('Are you sure you want to delete this record?')) return;
 
-        document.getElementById('historyCard').style.display = 'none';
-        document.getElementById('loading').style.display = 'block';
+        try {
+            const response = await fetch(`${REST_API}/${id}`, {
+                method: 'DELETE'
+            });
 
-        // Generujemy 5 dni historii
-        const historyPromises = [];
-        for (let i = 1; i <= 5; i++) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            const dateStr = date.toISOString().split('T')[0];
+            if (response.ok) {
+                showToast('Record deleted successfully!');
+                loadRecords();
+            } else {
+                showToast('Failed to delete record', 'error');
+            }
+        } catch (error) {
+            showToast('Error: ' + error.message, 'error');
+        }
+    }
 
-            historyPromises.push(
-                fetch(`${XMLRPC_URL}?city=${currentCity}&date=${dateStr}`)
-                    .then(r => r.json())
-            );
+    // ========== gRPC LIVE WEATHER ==========
+
+    async function getLiveWeather() {
+        const city = document.getElementById('grpcCity').value.trim();
+        if (!city) {
+            showToast('Please enter a city name', 'error');
+            return;
         }
 
-        Promise.all(historyPromises)
-            .then(results => {
-                displayHistory(results);
-            })
-            .catch(error => {
-                showError('Nie udało się pobrać historii');
-            })
-            .finally(() => {
-                document.getElementById('loading').style.display = 'none';
-            });
-    }
+        const loading = document.getElementById('grpcLoading');
+        const result = document.getElementById('grpcResult');
 
-    function displayHistory(data) {
-        const tbody = document.getElementById('historyBody');
-        tbody.innerHTML = '';
+        loading.classList.remove('hidden');
+        result.classList.add('hidden');
 
-        data.forEach(day => {
-            const row = tbody.insertRow();
-            row.innerHTML = `
-                    <td>${day.date}</td>
-                    <td>${day.temperature.toFixed(1)}°C</td>
-                    <td>${day.description}</td>
-                    <td>${day.humidity}%</td>
+        try {
+            const response = await fetch(`${GRPC_API}/${city}`);
+            const data = await response.json();
+
+            result.innerHTML = `
+                    <div class="weather-display">
+                        <div class="city">${data.city}</div>
+                        <div class="temp">${data.temperature}°C</div>
+                        <div class="desc">${data.description}</div>
+                        <div style="margin-top: 12px;">
+                            <span class="status-badge ${data.status === 'OK' ? 'status-ok' : 'status-alert'}">${data.status}</span>
+                        </div>
+                    </div>
                 `;
-        });
-
-        document.getElementById('historyCard').style.display = 'block';
+            result.classList.remove('hidden');
+        } catch (error) {
+            showToast('Failed to get weather data', 'error');
+        } finally {
+            loading.classList.add('hidden');
+        }
     }
 
-    function generateReport() {
-        if (!currentCity) return;
+    // ========== SOAP WEATHER REPORT ==========
 
-        document.getElementById('reportCard').style.display = 'none';
-        document.getElementById('loading').style.display = 'block';
+    async function generateReport() {
+        const city = document.getElementById('soapCity').value.trim();
+        if (!city) {
+            showToast('Please enter a city name', 'error');
+            return;
+        }
 
-        fetch(`${REPORT_API_URL}/${currentCity}?days=7`)
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to generate report');
-                return response.json();
-            })
-            .then(report => {
-                displayReport(report);
-            })
-            .catch(error => {
-                showError('Nie udało się wygenerować raportu');
-                console.error(error);
-            })
-            .finally(() => {
-                document.getElementById('loading').style.display = 'none';
-            });
+        const loading = document.getElementById('soapLoading');
+        const result = document.getElementById('soapResult');
+
+        loading.classList.remove('hidden');
+        result.classList.add('hidden');
+
+        try {
+            const response = await fetch(`${SOAP_API}/${city}?days=7`);
+            const data = await response.json();
+
+            result.innerHTML = `
+                    <div class="report-grid">
+                        <div class="report-item">
+                            <div class="label">City</div>
+                            <div class="value">${data.city}</div>
+                        </div>
+                        <div class="report-item">
+                            <div class="label">Report Date</div>
+                            <div class="value">${data.reportDate}</div>
+                        </div>
+                        <div class="report-item">
+                            <div class="label">Average Temp</div>
+                            <div class="value">${data.avgTemp}°C</div>
+                        </div>
+                        <div class="report-item">
+                            <div class="label">Min Temp</div>
+                            <div class="value">${data.minTemp}°C</div>
+                        </div>
+                        <div class="report-item">
+                            <div class="label">Max Temp</div>
+                            <div class="value">${data.maxTemp}°C</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; padding: 16px; background: #f7fafc; border-radius: 8px;">
+                        <strong>Summary:</strong> ${data.summary}
+                    </div>
+                `;
+            result.classList.remove('hidden');
+        } catch (error) {
+            showToast('Failed to generate report', 'error');
+        } finally {
+            loading.classList.add('hidden');
+        }
     }
 
-    function displayReport(report) {
-        const content = document.getElementById('reportContent');
-        content.innerHTML = `
-                <div class="report-row">
-                    <span class="report-label">Miasto:</span>
-                    <span class="report-value">${report.city}</span>
-                </div>
-                <div class="report-row">
-                    <span class="report-label">Data raportu:</span>
-                    <span class="report-value">${report.reportDate}</span>
-                </div>
-                <div class="report-row">
-                    <span class="report-label">Średnia temperatura:</span>
-                    <span class="report-value">${report.avgTemp}°C</span>
-                </div>
-                <div class="report-row">
-                    <span class="report-label">Min temperatura:</span>
-                    <span class="report-value">${report.minTemp}°C</span>
-                </div>
-                <div class="report-row">
-                    <span class="report-label">Max temperatura:</span>
-                    <span class="report-value">${report.maxTemp}°C</span>
-                </div>
-                <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid #e2e8f0;">
-                    <div class="report-label" style="margin-bottom: 8px;">Podsumowanie:</div>
-                    <div style="color: #4a5568; line-height: 1.6;">${report.summary}</div>
-                </div>
-            `;
+    // ========== XML-RPC HISTORICAL DATA ==========
 
-        document.getElementById('reportCard').style.display = 'block';
+    async function getHistoricalWeather() {
+        const city = document.getElementById('xmlrpcCity').value.trim();
+        if (!city) {
+            showToast('Please enter a city name', 'error');
+            return;
+        }
+
+        const loading = document.getElementById('xmlrpcLoading');
+        const result = document.getElementById('xmlrpcResult');
+
+        loading.classList.remove('hidden');
+        result.classList.add('hidden');
+
+        try {
+            const response = await fetch(`${XMLRPC_API}/${city}?days=5`);
+            const data = await response.json();
+
+            if (Array.isArray(data) && data.length > 0) {
+                result.innerHTML = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Temperature</th>
+                                    <th>Description</th>
+                                    <th>Source</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.map(day => `
+                                    <tr>
+                                        <td>${day.date || 'N/A'}</td>
+                                        <td>${day.temperature || 'N/A'}°C</td>
+                                        <td>${day.description || 'N/A'}</td>
+                                        <td>${day.source || 'XML-RPC'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+            } else {
+                result.innerHTML = '<div class="empty-state">No historical data available</div>';
+            }
+            result.classList.remove('hidden');
+        } catch (error) {
+            showToast('Failed to get historical data', 'error');
+        } finally {
+            loading.classList.add('hidden');
+        }
     }
 
-    function showError(message) {
-        const errorDiv = document.getElementById('error');
-        errorDiv.textContent = message;
-        errorDiv.style.display = 'block';
+    // ========== UTILITY FUNCTIONS ==========
+
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type}`;
+        toast.style.display = 'block';
+
         setTimeout(() => {
-            errorDiv.style.display = 'none';
+            toast.style.display = 'none';
         }, 3000);
     }
-
-    function hideAll() {
-        document.getElementById('error').style.display = 'none';
-        document.getElementById('weatherCard').style.display = 'none';
-        document.getElementById('historyCard').style.display = 'none';
-        document.getElementById('reportCard').style.display = 'none';
-    }
-
-    document.getElementById('cityInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            getWeather();
-        }
-    });
 </script>
 </body>
 </html>
