@@ -1,6 +1,8 @@
 package com.weather.frontend;
 
 import com.weather.frontend.grpc.WeatherResponse;
+import com.weather.frontend.model.WeatherHistory;
+import com.weather.frontend.service.WeatherHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RequestMapping("/api/weather")
 @CrossOrigin(origins = "*")
 public class WeatherController {
+    @Autowired
+    private WeatherHistoryService weatherHistoryService;
 
     @Autowired
     private WeatherGrpcClient grpcClient;
@@ -30,9 +34,24 @@ public class WeatherController {
                 grpcResponse.getStatus()
         );
 
+        // 🎁 BONUS: Auto-save do historii
+        try {
+            WeatherHistory history = new WeatherHistory(
+                    data.getCity(),
+                    data.getTemperature(),
+                    data.getDescription(),
+                    data.getStatus()
+            );
+            weatherHistoryService.create(history);
+        } catch (Exception e) {
+            // Ignoruj błędy zapisu (nie psuj głównego flow)
+        }
+
         // HATEOAS - linki
         EntityModel<WeatherData> model = EntityModel.of(data);
         model.add(linkTo(methodOn(WeatherController.class).getWeather(city)).withSelfRel());
+        model.add(linkTo(methodOn(WeatherHistoryController.class)
+                .getWeatherByCity(city)).withRel("history")); // Link do historii!
 
         return ResponseEntity.ok(model);
     }
