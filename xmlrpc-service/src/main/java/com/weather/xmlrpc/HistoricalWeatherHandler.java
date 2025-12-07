@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/xmlrpc")
@@ -36,10 +38,32 @@ public class HistoricalWeatherHandler {
     }
 
     @GetMapping("/historical")
-    public Map<String, Object> getHistoricalWeatherRest(
+    public List<Map<String, Object>> getHistoricalWeatherRest(
             @RequestParam String city,
-            @RequestParam String date) {
-        return getHistoricalWeather(city, date);
+            @RequestParam(defaultValue = "5") int days) {
+
+        List<Map<String, Object>> history = new ArrayList<>();
+
+        for (int i = 0; i < days; i++) {
+            LocalDate date = LocalDate.now().minusDays(i);
+
+            Map<String, Object> dayData = new HashMap<>();
+            dayData.put("city", city);
+            dayData.put("date", date.format(DateTimeFormatter.ISO_DATE));
+            dayData.put("temperature", 15.0 + (Math.random() * 15)); // 15-30°C
+            dayData.put("description", getRandomDescription());
+            dayData.put("humidity", 50 + (int)(Math.random() * 30)); // 50-80%
+            dayData.put("windSpeed", 5.0 + (Math.random() * 15)); // 5-20 km/h
+
+            history.add(dayData);
+        }
+
+        return history;
+    }
+
+    private String getRandomDescription() {
+        String[] descriptions = {"Sunny", "Cloudy", "Partly Cloudy", "Rainy", "Windy"};
+        return descriptions[(int)(Math.random() * descriptions.length)];
     }
 
     private Map<String, Object> getHistoricalWeather(String city, String date) {

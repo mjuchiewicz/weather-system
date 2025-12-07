@@ -8,6 +8,10 @@
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/weather-provider/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xmlrpc-client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xmlrpc-client/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xmlrpc-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xmlrpc-server/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xmlrpc-service/src/main/java" charset="UTF-8" />
   </component>
 </project>

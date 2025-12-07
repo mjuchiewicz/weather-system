@@ -1,3 +1,5 @@
+listy/
+report-service/src/main/java/META-INF/JAXB/
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
