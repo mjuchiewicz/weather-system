@@ -5,34 +5,31 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- PARENT -->
     <parent>
-        <groupId>com.weather</groupId>
-        <artifactId>WeatherSystem</artifactId>
+        <groupId>com.weather.xmlrpc</groupId>
+        <artifactId>xmlrpc-modules</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>xmlrpc-client</artifactId>
-    <packaging>jar</packaging>
+    <n>XML-RPC Client Module</n>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
+    <!-- DEPENDENCIES -->
     <dependencies>
-        <!-- Apache XML-RPC Client -->
+        <!-- Apache XML-RPC Client - WYMAGANE NA LIŚCIE! -->
         <dependency>
             <groupId>org.apache.xmlrpc</groupId>
             <artifactId>xmlrpc-client</artifactId>
-            <version>3.1.3</version>
+            <version>${xmlrpc.version}</version>
         </dependency>
 
-        <!-- Apache HTTP Components -->
+        <!-- Apache HttpComponents Client5 - WYMAGANE NA LIŚCIE! -->
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
             <version>5.2.1</version>
         </dependency>
     </dependencies>
+
 </project>

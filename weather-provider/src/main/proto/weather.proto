@@ -7,11 +7,21 @@ option java_outer_classname = "WeatherProto";
 package weather;
 
 service WeatherService {
+  // Existing - blocking call
   rpc getWeather (WeatherRequest) returns (WeatherResponse) {}
+
+  // NEW - Server streaming!
+  rpc getWeatherStream (WeatherStreamRequest) returns (stream WeatherResponse) {}
 }
 
 message WeatherRequest {
   string city = 1;
+}
+
+message WeatherStreamRequest {
+  string city = 1;
+  int32 updates = 2;
+  int32 intervalSeconds = 3;
 }
 
 message WeatherResponse {
@@ -19,4 +29,6 @@ message WeatherResponse {
   double temperature = 2;
   string description = 3;
   string status = 4;
+  int64 timestamp = 5;
+  int32 updateNumber = 6;
 }

@@ -44,8 +44,9 @@
         <module>report-service</module>
         <module>xmlrpc-service</module>
         <module>alert-service</module>
-        <module>xmlrpc-server</module>
-        <module>xmlrpc-client</module>
+<!--        <module>xmlrpc-server</module>-->
+<!--        <module>xmlrpc-client</module>-->
+        <module>xmlrpc-modules</module>
     </modules>
 
 </project>

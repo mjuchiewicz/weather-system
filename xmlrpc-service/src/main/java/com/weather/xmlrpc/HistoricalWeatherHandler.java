@@ -1,6 +1,7 @@
 package com.weather.xmlrpc;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -42,23 +43,23 @@ public class HistoricalWeatherHandler {
             @RequestParam String city,
             @RequestParam(defaultValue = "5") int days) {
 
-        List<Map<String, Object>> history = new ArrayList<>();
+        System.out.println("XML-RPC request: city=" + city + ", days=" + days);
 
-        for (int i = 0; i < days; i++) {
-            LocalDate date = LocalDate.now().minusDays(i);
+        try {
+            // weather-provider API
+            String weatherProviderUrl = System.getenv().getOrDefault("WEATHER_PROVIDER_URL", "http://localhost:8084");
+            String url = weatherProviderUrl + "/api/history/" + city + "?limit=" + days;
+            RestTemplate restTemplate = new RestTemplate();
+            List<Map<String, Object>> history = restTemplate.getForObject(url, List.class);
 
-            Map<String, Object> dayData = new HashMap<>();
-            dayData.put("city", city);
-            dayData.put("date", date.format(DateTimeFormatter.ISO_DATE));
-            dayData.put("temperature", 15.0 + (Math.random() * 15)); // 15-30°C
-            dayData.put("description", getRandomDescription());
-            dayData.put("humidity", 50 + (int)(Math.random() * 30)); // 50-80%
-            dayData.put("windSpeed", 5.0 + (Math.random() * 15)); // 5-20 km/h
+            System.out.println("Fetched " + (history != null ? history.size() : 0) + " records from weather-provider");
 
-            history.add(dayData);
+            return history != null ? history : new ArrayList<>();
+
+        } catch (Exception e) {
+            System.err.println("Failed to fetch history: " + e.getMessage());
+            return new ArrayList<>();
         }
-
-        return history;
     }
 
     private String getRandomDescription() {

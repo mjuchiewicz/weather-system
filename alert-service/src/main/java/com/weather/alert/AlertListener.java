@@ -13,6 +13,5 @@ public class AlertListener {
         System.out.println("Message: " + alertMessage);
         System.out.println("========================================\n");
 
-        // Tu możesz dodać wysyłanie emaili, SMS, itp.
     }
 }

@@ -38,6 +38,12 @@ public class WeatherAlertController {
         EntityModel<WeatherAlert> model = EntityModel.of(created);
         model.add(linkTo(methodOn(WeatherAlertController.class)
                 .getAlertById(created.getId())).withSelfRel());
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .getAllAlerts(0, 10, "createdAt")).withRel("all-alerts"));
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .updateAlert(created.getId(), created)).withRel("update"));
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .deleteAlert(created.getId())).withRel("delete"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(model);
     }
@@ -57,6 +63,12 @@ public class WeatherAlertController {
                     EntityModel<WeatherAlert> model = EntityModel.of(alert);
                     model.add(linkTo(methodOn(WeatherAlertController.class)
                             .getAlertById(alert.getId())).withSelfRel());
+                    model.add(linkTo(methodOn(WeatherAlertController.class)
+                            .updateAlert(alert.getId(), alert)).withRel("update"));
+                    model.add(linkTo(methodOn(WeatherAlertController.class)
+                            .deleteAlert(alert.getId())).withRel("delete"));
+                    model.add(linkTo(methodOn(WeatherAlertController.class)
+                            .toggleAlert(alert.getId())).withRel("toggle"));
                     return model;
                 })
                 .collect(Collectors.toList());
@@ -66,6 +78,16 @@ public class WeatherAlertController {
         response.put("currentPage", alertPage.getNumber());
         response.put("totalItems", alertPage.getTotalElements());
         response.put("totalPages", alertPage.getTotalPages());
+
+        // Add collection-level links
+        response.put("_links", Map.of(
+                "self", linkTo(methodOn(WeatherAlertController.class)
+                        .getAllAlerts(page, size, sortBy)).withSelfRel(),
+                "create", linkTo(methodOn(WeatherAlertController.class)
+                        .createAlert(new WeatherAlert())).withRel("create"),
+                "active", linkTo(methodOn(WeatherAlertController.class)
+                        .getActiveAlerts()).withRel("active")
+        ));
 
         return ResponseEntity.ok(response);
     }
@@ -78,6 +100,14 @@ public class WeatherAlertController {
         EntityModel<WeatherAlert> model = EntityModel.of(alert);
         model.add(linkTo(methodOn(WeatherAlertController.class)
                 .getAlertById(id)).withSelfRel());
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .getAllAlerts(0, 10, "createdAt")).withRel("all-alerts"));
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .updateAlert(id, alert)).withRel("update"));
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .deleteAlert(id)).withRel("delete"));
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .toggleAlert(id)).withRel("toggle"));
 
         return ResponseEntity.ok(model);
     }
@@ -100,6 +130,12 @@ public class WeatherAlertController {
         EntityModel<WeatherAlert> model = EntityModel.of(updated);
         model.add(linkTo(methodOn(WeatherAlertController.class)
                 .getAlertById(id)).withSelfRel());
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .getAllAlerts(0, 10, "createdAt")).withRel("all-alerts"));
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .deleteAlert(id)).withRel("delete"));
+        model.add(linkTo(methodOn(WeatherAlertController.class)
+                .toggleAlert(id)).withRel("toggle"));
 
         return ResponseEntity.ok(model);
     }

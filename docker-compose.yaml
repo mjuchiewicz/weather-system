@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # 1. Eureka Server - service discovery (musi wystartować pierwszy!)
+  # 1. Eureka Server
   eureka-server:
     image: eureka-server:latest
     container_name: eureka-server
@@ -21,8 +21,8 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"   # AMQP port
-      - "15672:15672" # Management UI
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - weather-network
     healthcheck:
@@ -31,7 +31,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # 3. Weather Provider - gRPC service (czeka na RabbitMQ i Eureka)
+  # 3. Weather Provider - gRPC service
   weather-provider:
     image: weather-provider:latest
     container_name: weather-provider
@@ -74,6 +74,7 @@ services:
       - "8087:8087"
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - WEATHER_PROVIDER_URL=http://weather-provider:8084
     networks:
       - weather-network
     depends_on:
@@ -88,13 +89,14 @@ services:
       - "8088:8088"
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - WEATHER_PROVIDER_URL=http://weather-provider:8084
     networks:
       - weather-network
     depends_on:
       eureka-server:
         condition: service_healthy
 
-  # 7. Frontend Service - główny endpoint REST
+  # 7. Frontend Service
   frontend-service:
     build:
       context: ./frontend-service
@@ -116,7 +118,6 @@ services:
       weather-provider:
         condition: service_started
 
-# Sieć do komunikacji między kontenerami
 networks:
   weather-network:
     driver: bridge

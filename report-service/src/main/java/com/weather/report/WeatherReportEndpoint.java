@@ -18,20 +18,60 @@ public class WeatherReportEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getWeatherReportRequest")
     @ResponsePayload
     public GetWeatherReportResponse getWeatherReport(@RequestPayload GetWeatherReportRequest request) {
-        System.out.println("SOAP Request received for city: " + request.getCity() + ", days: " + request.getDays());
+        String city = request.getCity();
+        int days = request.getDays();
+
+        System.out.println("SOAP Report request: city=" + city + ", days=" + days);
 
         GetWeatherReportResponse response = new GetWeatherReportResponse();
-        response.setCity(request.getCity());
+        response.setCity(city);
         response.setReportDate(LocalDate.now().format(DateTimeFormatter.ISO_DATE));
 
-        // Fake data - symulujemy raport pogodowy
-        response.setAverageTemperature(22.5);
-        response.setMinTemperature(18.0);
-        response.setMaxTemperature(28.0);
-        response.setSummary(String.format("Weather report for %s over last %d days: Mostly sunny with mild temperatures.",
-                request.getCity(), request.getDays()));
+        try {
+            String weatherProviderUrl = System.getenv().getOrDefault("WEATHER_PROVIDER_URL", "http://localhost:8084");
+            String url = weatherProviderUrl + "/api/history/" + city + "/stats";
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            java.util.Map<String, Object> stats = restTemplate.getForObject(url, java.util.Map.class);
 
-        System.out.println("SOAP Response sent for: " + request.getCity());
+            if (stats != null && stats.get("recordCount") != null) {
+                long count = ((Number) stats.get("recordCount")).longValue();
+
+                if (count > 0) {
+                    double avgTemp = ((Number) stats.get("avgTemp")).doubleValue();
+                    double minTemp = ((Number) stats.get("minTemp")).doubleValue();
+                    double maxTemp = ((Number) stats.get("maxTemp")).doubleValue();
+
+                    response.setAverageTemperature(avgTemp);
+                    response.setMinTemperature(minTemp);
+                    response.setMaxTemperature(maxTemp);
+                    response.setSummary(String.format(
+                            "Weather report for %s based on %d real measurements from OpenWeatherMap API. " +
+                                    "Temperature ranges from %.1f°C to %.1f°C with average of %.1f°C.",
+                            city, count, minTemp, maxTemp, avgTemp
+                    ));
+
+                    System.out.println("SOAP Report generated from " + count + " real records");
+
+                    return response;
+                }
+            }
+
+            response.setAverageTemperature(0.0);
+            response.setMinTemperature(0.0);
+            response.setMaxTemperature(0.0);
+            response.setSummary("No historical data available for " + city + ". Please check weather first to generate history.");
+
+            System.out.println("SOAP Report: No data available for " + city);
+
+        } catch (Exception e) {
+            System.err.println("Failed to fetch stats: " + e.getMessage());
+            e.printStackTrace();
+
+            response.setAverageTemperature(0.0);
+            response.setMinTemperature(0.0);
+            response.setMaxTemperature(0.0);
+            response.setSummary("Error generating report: " + e.getMessage());
+        }
 
         return response;
     }

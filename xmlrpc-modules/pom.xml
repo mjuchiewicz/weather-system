@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.weather.xmlrpc</groupId>
+    <artifactId>xmlrpc-modules</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Weather XML-RPC Modules</name>
+    <description>Apache XML-RPC implementation for weather history</description>
+
+    <!-- MODUŁY -->
+    <modules>
+        <module>xmlrpc-server</module>
+        <module>xmlrpc-client</module>
+    </modules>
+
+    <!-- PROPERTIES -->
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <xmlrpc.version>3.1.3</xmlrpc.version>
+    </properties>
+
+    <!-- DEPENDENCIES WSPÓLNE DLA WSZYSTKICH MODUŁÓW -->
+    <dependencies>
+        <!-- Apache XML-RPC Common - WYMAGANE NA LIŚCIE! -->
+        <dependency>
+            <groupId>org.apache.xmlrpc</groupId>
+            <artifactId>xmlrpc-common</artifactId>
+            <version>${xmlrpc.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
