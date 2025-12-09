@@ -1184,6 +1184,104 @@
         }
     }
 
+    // ============================================
+    // ADVANCED STATISTICS (Spring Cloud Feign)
+    // ============================================
+
+    async function getAdvancedStatistics() {
+        const city = document.getElementById('statsCity').value.trim();
+        if (!city) {
+            showToast('Enter a city name', 'error');
+            return;
+        }
+
+        const loading = document.getElementById('statsLoading');
+        const result = document.getElementById('statsResult');
+
+        loading.classList.remove('hidden');
+        result.classList.add('hidden');
+
+        try {
+            const response = await fetch(`http://localhost:8089/api/statistics/${city}`);
+            const data = await response.json();
+
+            if (data.error) {
+                result.innerHTML = `
+                    <div style="padding: 20px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 12px; color: white; text-align: center;">
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">⚠️ ${data.error}</div>
+                        <div style="font-size: 14px; opacity: 0.9;">${data.hint || 'Generate weather data first!'}</div>
+                    </div>
+                `;
+            } else {
+                result.innerHTML = `
+                    <div style="padding: 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; color: white; margin-bottom: 20px;">
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                            📊 Advanced Statistics for ${data.city}
+                        </div>
+                        <div style="font-size: 14px; opacity: 0.9;">
+                            Calculated using Spring Cloud Feign Client • ${data.recordCount} measurements
+                        </div>
+                    </div>
+
+                    <div class="report-grid">
+                        <div class="report-item">
+                            <div class="label">Average</div>
+                            <div class="value">${data.average.toFixed(2)}°C</div>
+                        </div>
+                        <div class="report-item">
+                            <div class="label">Median</div>
+                            <div class="value" style="color: #8b5cf6;">${data.median.toFixed(2)}°C</div>
+                        </div>
+                        <div class="report-item">
+                            <div class="label">Min / Max</div>
+                            <div class="value">${data.min.toFixed(1)}°C / ${data.max.toFixed(1)}°C</div>
+                        </div>
+                        <div class="report-item">
+                            <div class="label">Std. Deviation</div>
+                            <div class="value" style="color: #f59e0b;">${data.standardDeviation.toFixed(2)}°C</div>
+                        </div>
+                        <div class="report-item">
+                            <div class="label">Trend</div>
+                            <div class="value" style="color: ${data.trend === 'RISING' ? '#ef4444' : data.trend === 'FALLING' ? '#3b82f6' : '#64748b'};">
+                                ${data.trend === 'RISING' ? '📈 RISING' : data.trend === 'FALLING' ? '📉 FALLING' : '➡️ STABLE'}
+                            </div>
+                        </div>
+                        <div class="report-item">
+                            <div class="label">Outliers</div>
+                            <div class="value">${data.outliers.length} detected</div>
+                        </div>
+                    </div>
+
+                    ${data.outliers.length > 0 ? `
+                        <div style="margin-top: 20px; padding: 16px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                            <div style="font-weight: 600; margin-bottom: 8px; color: #0f172a;">⚠️ Anomalies Detected (>2σ):</div>
+                            <div style="color: #64748b;">${data.outliers.map(val => val.toFixed(1) + '°C').join(', ')}</div>
+                        </div>
+                    ` : ''}
+
+                    <div style="margin-top: 20px; padding: 16px; background: #eff6ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                        <div style="font-weight: 600; margin-bottom: 8px; color: #0f172a;">🔬 Statistical Analysis</div>
+                        <div style="color: #64748b; font-size: 14px;">
+                            Based on ${data.recordCount} measurements.
+                            ${data.trend === 'RISING' ? 'Temperature shows an upward trend.' :
+                              data.trend === 'FALLING' ? 'Temperature shows a downward trend.' :
+                              'Temperature remains stable.'}
+                            ${data.standardDeviation < 1 ? ' Low variability.' : ' High variability.'}
+                        </div>
+                    </div>
+                `;
+                showToast('Statistics calculated successfully!');
+            }
+
+            result.classList.remove('hidden');
+
+        } catch (error) {
+            showToast('Error: ' + error.message, 'error');
+        } finally {
+            loading.classList.add('hidden');
+        }
+    }
+
     function showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
         toast.textContent = message;
@@ -1197,6 +1295,24 @@
 <!-- NOWA SEKCJA XML-RPC                         -->
 <!-- Zamień całą sekcję "Historical Data" na tę!-->
 <!-- ============================================ -->
+
+<!-- Advanced Statistics Service (Spring Cloud Feign) -->
+<div class="section">
+    <div class="section-title">📊 Advanced Statistics Service</div>
+    <p style="color: #64748b; margin-bottom: 20px; font-size: 14px;">
+        Spring Cloud Feign Client • Advanced Analytics • Median, Std Dev, Trend Analysis, Outlier Detection
+    </p>
+
+    <div class="form-group">
+        <label>City Name</label>
+        <input type="text" id="statsCity" placeholder="Warsaw" value="Warsaw">
+    </div>
+
+    <button class="btn-success" onclick="getAdvancedStatistics()">📈 Get Advanced Statistics</button>
+
+    <div id="statsLoading" class="loading hidden">Calculating statistics...</div>
+    <div id="statsResult" class="hidden"></div>
+</div>
 
 <!-- XML-RPC Historical Data -->
 <div class="section">

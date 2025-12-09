@@ -118,6 +118,25 @@ services:
       weather-provider:
         condition: service_started
 
+  # 8. Statistics Service - Spring Cloud Feign Client
+  statistics-service:
+    build:
+      context: ./statistics-service
+      dockerfile: Dockerfile
+    image: statistics-service:latest
+    container_name: statistics-service
+    ports:
+      - "8089:8089"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    networks:
+      - weather-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      weather-provider:
+        condition: service_started
+
 networks:
   weather-network:
     driver: bridge
